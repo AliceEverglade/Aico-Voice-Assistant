@@ -1,6 +1,26 @@
+import time
+
 import speech_recognition as sr
-sr.__version__
-'3.8.1'
+import pyautogui
+
+
+# "Aico please close this application"
+# "Aico please google why are bananas so hot"
+#listen to voice /////
+#check for [Aico] <-
+#check for command after Aico
+#check what command
+#activate command
+
+def command_google(google: str):
+    pyautogui.keyDown("alt")
+    pyautogui.press("space")
+    pyautogui.keyUp("alt")
+    pyautogui.typewrite("www.google.com")
+    pyautogui.press("enter")
+    time.sleep(2)
+    pyautogui.typewrite(google)
+    pyautogui.press("enter")
 
 
 class Command:
@@ -9,13 +29,32 @@ class Command:
         self.callback = callback
 
     def match(self, user_input: str):
-        if user_input in self.command_input:
-            return self.callback()
+        for command in self.command_input:
+
+            if user_input.startswith(command):
+                return self.callback(user_input[len(command):])
+
+        return False
 
 
-def command_recognition(command):
-    triggers = []
-#   print("Something has been said")
+def command_recognition(command: str):
+#   storing versions the speech
+    aico = ["ico", "i go", "aiko", "aico"]
+    command_list = [
+        Command(command_input=["please google"], callback=command_google()),
+        ]
+    command_input = command.lower().split(" ")
+#   check where Aico is in the string
+    for pos, com in enumerate(command):
+        if com in aico:
+#           check for what command is being called
+
+            for command_class in command_list:
+                if result := command_class.match(command_input):
+#                    command_class.callback
+
+
+    #command_1 = Command([])
 
 
 r = sr.Recognizer()
@@ -29,7 +68,7 @@ while True:
             audio = r.listen(source)
         CommandActivation = r.recognize_google(audio)
         print(CommandActivation)
-        command_recognition(CommandActivation)
+        command_google(CommandActivation)
 
     except sr.UnknownValueError:
         pass
